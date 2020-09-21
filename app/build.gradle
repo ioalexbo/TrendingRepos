@@ -4,16 +4,16 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "com.alexlepadatu.trendingrepos"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner rootProject.ext.testInstrumentationRunner
     }
 
     buildTypes {
@@ -33,61 +33,41 @@ android {
     }
 }
 
-ext {
-    versions = [
-            lifecycle_version : "2.2.0",
-            rch_version : "2.1.0",
-            room: '2.2.5',
-            squareRetrofit: '2.5.0',
-            squareOkhttp : '3.10.0',
-
-            rxJavaVersion: '2.2.2',
-            rxAndroidVersion : '2.1.0'
-    ]
-}
-
 dependencies {
-    api project(':domain')
-    api project(':data')
+    implementation project(':domain')
+    implementation project(':data')
 
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
-    implementation 'com.google.android:flexbox:2.0.1'
-    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
+    def appDependencies = rootProject.ext.appDependencies
+
+//    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation appDependencies.kotlin
+    implementation appDependencies.appCompat
+    implementation appDependencies.material
+    implementation appDependencies.constraintLayout
+    implementation appDependencies.recyclerview
+    implementation appDependencies.flexbox
+//    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
     // RxJava
-    implementation "io.reactivex.rxjava2:rxjava:$versions.rxJavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$versions.rxAndroidVersion"
-
-    // retrofit scalar
-    implementation "com.squareup.retrofit2:retrofit:$versions.squareRetrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$versions.squareRetrofit"
-    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
-
-    // okhttp for retrofit
-    implementation "com.squareup.okhttp3:okhttp:$versions.squareOkhttp"
-    implementation "com.squareup.okhttp3:logging-interceptor:$versions.squareOkhttp"
-
-    // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle_version"
-    implementation "androidx.fragment:fragment-ktx:1.2.5"
-
-    // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_version"
+    implementation appDependencies.rxAndroid
+    implementation appDependencies.rxJava
 
     // Room
-    implementation "androidx.room:room-runtime:$versions.room"
-    kapt "androidx.room:room-compiler:$versions.room"
+    implementation appDependencies.room
+    kapt appDependencies.roomCompiler
 
-    testImplementation 'junit:junit:4.12'
+    // retrofit scalar
+    implementation appDependencies.retrofit
+
+    // ViewModel
+    implementation appDependencies.lifecycleViewModel
+    implementation appDependencies.lifecycleExtensions
+    implementation appDependencies.fragmentKtx
+
+    // LiveData
+    implementation appDependencies.lifecycle
+
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:2.25.0'
     testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
     testImplementation "org.hamcrest:hamcrest-library:1.3"

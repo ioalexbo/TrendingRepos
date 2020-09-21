@@ -1,6 +1,5 @@
 package com.alexlepadatu.trendingrepos.data.repository.trending
 
-import android.util.Log
 import com.alexlepadatu.inggithub.data.RepoItemDto
 import com.alexlepadatu.trendingrepos.data.api.GitApi
 import com.alexlepadatu.trendingrepos.data.database.dao.RepositoryItemDao
@@ -9,10 +8,10 @@ import com.alexlepadatu.trendingrepos.data.mappers.mapToEntity
 import com.alexlepadatu.trendingrepos.data.models.entity.RepositoryEntity
 import com.alexlepadatu.trendingrepos.data.repository.BaseRepositoryImpl
 import com.alexlepadatu.trendingrepos.data.utils.DateExt
+import com.alexlepadatu.trendingrepos.domain.common.ResultState
 import com.alexlepadatu.trendingrepos.domain.models.TrendingRepo
 import com.alexlepadatu.trendingrepos.domain.repository.TrendingReposRepository
 import io.reactivex.Flowable
-import com.alexlepadatu.trendingrepos.domain.common.ResultState
 
 class TrendingReposRepositoryImpl (private val api: GitApi,
                                    private val dao: RepositoryItemDao
@@ -28,7 +27,6 @@ class TrendingReposRepositoryImpl (private val api: GitApi,
         val mapperToDomain: (List<RepositoryEntity>) -> List<TrendingRepo> = { it.mapToDomain() }
 
         val persist: (items: List<RepositoryEntity>) -> Unit = {
-            Log.e("TrendingReposRepository", "persist data: ${it.size}")
             dao.insertAll(*it.toTypedArray())
         }
 
