@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_height">60dp</dimen>
+
+    <dimen name="margin_xsmall">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_big">24dp</dimen>
+
+    <dimen name="header1_size">20sp</dimen>
+    <dimen name="subtitle_size">16sp</dimen>
+    <dimen name="body_size">12sp</dimen>
+
+    <dimen name="ing_image_size">100dp</dimen>
+</resources>
