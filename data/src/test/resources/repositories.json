@@ -1,0 +1,41 @@
+[
+  {
+    "author":"android",
+    "name":"architecture-components-samples",
+    "avatar":"https://github.com/android.png",
+    "url":"https://github.com/android/architecture-components-samples",
+    "description":"Samples for Android Architecture Components.",
+    "language":"Kotlin",
+    "languageColor":"#F18E33",
+    "stars":18365,
+    "forks":6342,
+    "currentPeriodStars":14,
+    "builtBy":[
+      {
+        "username":"ianhanniballake",
+        "href":"https://github.com/ianhanniballake",
+        "avatar":"https://avatars2.githubusercontent.com/u/517315"
+      },
+      {
+        "username":"dlam",
+        "href":"https://github.com/dlam",
+        "avatar":"https://avatars3.githubusercontent.com/u/831038"
+      },
+      {
+        "username":"JoseAlcerreca",
+        "href":"https://github.com/JoseAlcerreca",
+        "avatar":"https://avatars3.githubusercontent.com/u/609125"
+      },
+      {
+        "username":"yigit",
+        "href":"https://github.com/yigit",
+        "avatar":"https://avatars1.githubusercontent.com/u/89202"
+      },
+      {
+        "username":"florina-muntenescu",
+        "href":"https://github.com/florina-muntenescu",
+        "avatar":"https://avatars2.githubusercontent.com/u/2998890"
+      }
+    ]
+  }
+]

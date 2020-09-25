@@ -16,9 +16,10 @@ class ListReposViewModel (trendingReposUseCase : TrendingReposUseCase): BaseView
     }
 
     init {
-        val disposable = trendingReposUseCase.getTrendingRepositories().subscribe {
-            backingTrendingRepos.value = it
-        }
+        val disposable = trendingReposUseCase.getTrendingRepositories()
+            .subscribe {
+                backingTrendingRepos.value = it
+            }
         addDisposable(disposable)
     }
 }

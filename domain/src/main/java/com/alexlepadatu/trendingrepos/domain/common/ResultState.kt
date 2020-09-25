@@ -17,22 +17,3 @@ sealed class ResultState<T> {
      */
     data class Error<T>(val throwable: Throwable, val data: T? = null) : ResultState<T>()
 }
-
-
-//sealed class ResultState<T>(open val data: T) {
-//
-//    /**
-//     * A state of [data] which shows that we know there is still an update to come.
-//     */
-//    data class Loading<T>(override val data: T) : ResultState<T>(data)
-//
-//    /**
-//     * A state that shows the [data] is the last known update.
-//     */
-//    data class Success<T>(override val data: T) : ResultState<T>(data)
-//
-//    /**
-//     * A state to show a [throwable] is thrown.
-//     */
-//    data class Error<T>(val throwable: Throwable, override val data: T) : ResultState<T>(data)
-//}

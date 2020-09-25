@@ -11,8 +11,8 @@ data class TrendingRepo(
     val avatar: String,
     val url: String,
     val currentPeriodStars: Int,
-    val forks: Int,
-    val stars: Int,
+    val forksCount: Int,
+    val starsCount: Int,
     val builtBy: List<TrendingRepoAuthor>
 ): Parcelable
 

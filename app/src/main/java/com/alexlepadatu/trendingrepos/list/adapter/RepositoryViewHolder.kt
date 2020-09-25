@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alexlepadatu.trendingrepos.domain.models.TrendingRepo
-import com.google.android.flexbox.*
 import kotlinx.android.synthetic.main.cell_repo.view.*
 
 class RepositoryViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -18,8 +17,8 @@ class RepositoryViewHolder(view: View): RecyclerView.ViewHolder(view) {
         lblRepoName.text = repo.name
         lblRepoDescription.text = repo.description
         lblLanguage.text = repo.language
-        lblStars.text = repo.stars.toString()
-        lblForks.text = repo.forks.toString()
+        lblStars.text = repo.starsCount.toString()
+        lblForks.text = repo.forksCount.toString()
 
         itemView.setOnClickListener {
             itemSelectListener?.invoke(repo)

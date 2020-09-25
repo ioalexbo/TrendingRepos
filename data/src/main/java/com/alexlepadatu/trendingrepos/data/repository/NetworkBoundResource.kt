@@ -1,42 +1,26 @@
 package com.alexlepadatu.trendingrepos.data.repository
 
-import io.reactivex.*
-import io.reactivex.processors.PublishProcessor
 import com.alexlepadatu.trendingrepos.domain.common.ResultState
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
+import io.reactivex.processors.PublishProcessor
 import java.util.concurrent.atomic.AtomicReference
 
-/**
- * @param DTO the type returned by network call
- * @param Entity the entity that is related to this repository
- * @param Domain the type returned by the repo
- */
-abstract class BaseRepositoryImpl<DTO, Entity, Domain> {
+abstract class NetworkBoundResource<DTO, Entity, Domain> {
+    private var result: Flowable<ResultState<Domain>>
 
-    /**
-     * @param D a data type
-     * @param databaseFlowable a flowable to load an entity from database.
-     * @param netSingle a single to load an entity from server.
-     * @param persist a high order function to persist an entity.
-     * @param alwaysRefresh if you want to always fetch from network call, or use the cached values
-     */
-    protected fun performGet(
-        netSingle: Single<DTO>,
-        mapperToEntity : (DTO) -> Entity,
-        databaseFlowable: Flowable<Entity>,
-        mapperToDomain : (Entity) -> Domain,
-        alwaysRefresh: Boolean,
-        shouldFetch: (Entity) -> Boolean,
-        shouldReturnErrorCallback: (Domain) -> Boolean,
-        persist: (list: Entity) -> Unit): Flowable<ResultState<Domain>> {
-
+    init {
         val data = AtomicReference<Domain>()
         val processor = PublishProcessor.create<ResultState<Domain>>()
-        val flowable : Flowable<Entity> = databaseFlowable.doOnNext {
+
+        @Suppress("LeakingThis")
+        val flowable : Flowable<Entity> = databaseFlowable().doOnNext {
             data.set(mapperToDomain(it))
         }
             .share()
 
-        return Flowable.merge(
+        result = Flowable.merge(
             flowable.take(1)
                 .flatMap {
                     val domainData = mapperToDomain(it)
@@ -44,13 +28,13 @@ abstract class BaseRepositoryImpl<DTO, Entity, Domain> {
                     if (shouldFetch(it)) {
                         return@flatMap concatJustFlowable(
                             ResultState.Loading(domainData),
-                            handleNetSingle(netSingle, mapperToEntity, persist, data.get(), shouldReturnErrorCallback)
+                            handleNetSingle(data.get())
                         )
                     } else {
-                        if (alwaysRefresh) {
+                        if (alwaysRefresh()) {
                             return@flatMap concatJustFlowable(
                                 ResultState.Loading(domainData),
-                                handleNetSingle(netSingle, mapperToEntity, persist, data.get(), shouldReturnErrorCallback)
+                                handleNetSingle(data.get())
                             )
                         }
 
@@ -74,19 +58,14 @@ abstract class BaseRepositoryImpl<DTO, Entity, Domain> {
             })
     }
 
-    private fun <Domain> concatJustFlowable(
+    private fun concatJustFlowable(
         d: ResultState<Domain>,
         flowable: Flowable<ResultState<Domain>>
     ) = Flowable.concat(Flowable.just<ResultState<Domain>>(d), flowable)
 
-    private fun <DTO, Entity, Domain> handleNetSingle(
-        netSingle: Single<DTO>,
-        mapperToEntity : (DTO) -> Entity,
-        persist: (Entity) -> Unit,
-        cachedData: Domain,
-        shouldReturnErrorCallback: (Domain) -> Boolean
-    ): Flowable<ResultState<Domain>> {
-        return netSingle.toFlowable()
+    private fun handleNetSingle(cachedData: Domain)
+            : Flowable<ResultState<Domain>> {
+        return netSingle().toFlowable()
             .flatMap {
                 val entitiesToPersist = mapperToEntity(it)
                 persist(entitiesToPersist)
@@ -98,4 +77,23 @@ abstract class BaseRepositoryImpl<DTO, Entity, Domain> {
                     ResultState.Success(cachedData)
             }
     }
+
+    protected abstract fun netSingle(): Single<DTO>
+
+    protected abstract fun mapperToEntity(dto: DTO) : Entity
+
+    protected abstract fun databaseFlowable(): Flowable<Entity>
+
+    protected abstract fun mapperToDomain(entity: Entity) : Domain
+
+    // refresh even if cache data is available
+    protected abstract fun alwaysRefresh(): Boolean
+
+    protected abstract fun shouldFetch(entity: Entity): Boolean
+
+    protected abstract fun shouldReturnErrorCallback(domain: Domain): Boolean
+
+    protected abstract fun persist(entity: Entity)
+
+    fun getResult(): Flowable<ResultState<Domain>> = result
 }
