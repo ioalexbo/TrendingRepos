@@ -6,7 +6,7 @@ import com.alexlepadatu.trendingrepos.data.models.entity.RepositoryAuthor
 import com.alexlepadatu.trendingrepos.data.models.entity.RepositoryEntity
 import com.alexlepadatu.trendingrepos.domain.models.TrendingRepo
 
-internal fun RepoItemDto.toEntity(timeFetch: Long): RepositoryEntity {
+    internal fun RepoItemDto.toEntity(timeFetch: Long): RepositoryEntity {
     return RepositoryEntity(
         name = this.name,
         description = this.description,

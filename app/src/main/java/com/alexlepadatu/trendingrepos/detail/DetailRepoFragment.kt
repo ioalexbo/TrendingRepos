@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.alexlepadatu.ing.gitrepos.ui.fragments.repos.adapters.RepositoryViewHolder
 import com.alexlepadatu.trendingrepos.R
 import com.alexlepadatu.trendingrepos.base.BaseFragment
@@ -23,6 +25,8 @@ class DetailRepoFragment : BaseFragment() {
             return fragment
         }
     }
+
+    private val viewModel: DetailRepoViewModel by viewModels()
 
     private val adapter = BuiltByAdapter()
 
@@ -44,16 +48,18 @@ class DetailRepoFragment : BaseFragment() {
         }
 
         arguments?.let {
-            setTrendingRepo(it.getParcelable(EXTRA_TRENDING_REPO))
+            viewModel.setTrendingRepo(it.getParcelable(EXTRA_TRENDING_REPO))
         }
+
+        initObservables()
     }
 
-    private fun setTrendingRepo(repo: TrendingRepo?) {
-        repo?.let {
+    private fun initObservables() {
+        viewModel.trendingRepo.observe(viewLifecycleOwner, Observer { repo ->
             val holder = RepositoryViewHolder(viewCellRepo)
-            holder.bindData(it)
+            holder.bindData(repo)
 
             adapter.data = repo.builtBy
-        }
+        })
     }
 }

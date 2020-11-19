@@ -11,8 +11,13 @@ import com.alexlepadatu.trendingrepos.domain.common.ResultState
 class ListReposViewModel (trendingReposUseCase : TrendingReposUseCase): BaseViewModel() {
 
     private val backingTrendingRepos: MutableLiveData<ResultState<List<TrendingRepo>>> = MutableLiveData()
-    val trendingRepos: LiveData<ResultState<List<TrendingRepo>>> = Transformations.switchMap(backingTrendingRepos) {
-        MutableLiveData(it)
+    val trendingRepos: LiveData<ResultState<List<TrendingRepo>>> =
+        MutableLiveData<ResultState<List<TrendingRepo>>>().also { mutable ->
+        val disposable = trendingReposUseCase.getTrendingRepositories()
+            .subscribe {
+                mutable.value = it
+            }
+        addDisposable(disposable)
     }
 
     init {
